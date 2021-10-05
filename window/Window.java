@@ -1,6 +1,6 @@
 package window;
 
-//import point.Point;
+import point.Point;
 
 public class Window {
     private int xMin, xMax, yMin, yMax;
@@ -20,13 +20,15 @@ public class Window {
         setYmax(yMax);
     }
 
-    /*public Point mapToViewport(Window viewport, Point point){
+    public Point mapToViewport(Window viewport, Point point){
         Point viewportPoint = new Point();
 
-        viewportPoint.setX(viewport.getXmin());
+        viewportPoint.setX(viewport.getXmin() + ((point.getX()-getXmin())/(getXmax()-getXmin()))*(viewport.getXmax()-viewport.getXmin()));
+
+        viewportPoint.setY(viewport.getYmin() + ((point.getY()-getYmin())/(getYmax()-getYmin()))*(viewport.getYmax()-viewport.getYmin()));
 
         return viewportPoint;
-    }*/
+    }
 
     /* setters and getters */
     public int getXmin() {
