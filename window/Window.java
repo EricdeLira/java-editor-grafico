@@ -30,6 +30,10 @@ public class Window {
         return viewportPoint;
     }
 
+    public int mapToViewport(Window viewport, int a) {
+        return (int)(((double)a/(double)(getXmax()-getXmin()))*((double)viewport.getXmax()-(double)viewport.getXmin()));
+    }
+
     /* setters and getters */
     public int getXmin() {
         return xMin;
