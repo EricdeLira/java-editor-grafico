@@ -1,6 +1,6 @@
 package window;
 
-import point.Point;
+//import point.Point;
 
 public class Window {
     private int xMin, xMax, yMin, yMax;
