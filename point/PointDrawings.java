@@ -7,7 +7,7 @@ import window.Window;
 public class PointDrawings {
 
     public static void drawPointOnWindow(Graphics2D g, int x, int y, String name, int diameter, Color color){
-        GraphicPoint point = new GraphicPoint(x, y, color, name, diameter);
+        GraphicPoint point = new GraphicPoint(x, y, color, name, diameter+1);
         point.drawPoint(g);
     }
 
@@ -15,7 +15,7 @@ public class PointDrawings {
 
         Point auxPoint = window.mapToViewport(viewport, new Point(x, y));
 
-        GraphicPoint point = new GraphicPoint((int)auxPoint.getX(), (int)auxPoint.getY(), Color.BLUE, name, diameter);
+        GraphicPoint point = new GraphicPoint((int)auxPoint.getX(), (int)auxPoint.getY(), Color.BLUE, name, diameter+1);
 
         point.drawPoint(g);
     }
