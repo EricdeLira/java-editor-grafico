@@ -22,8 +22,8 @@ public class PointDrawings {
 
     public static void drawMultiplePoints(Graphics2D g, int qty, int diameter){
         for(int i=0; i < qty; i++){
-            int x = (int) (Math.random() * 800);
-            int y = (int) (Math.random() * 800);
+            int x = (int) (Math.random() * 801);
+            int y = (int) (Math.random() * 801);
 
             Color color = new Color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256));
 

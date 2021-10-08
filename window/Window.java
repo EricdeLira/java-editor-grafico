@@ -12,7 +12,7 @@ public class Window {
         setYmax(0);
     }
 
-    public Window(int xwMin, int xMax, int yMin, int yMax){
+    public Window(int xwMin, int yMin, int xMax, int yMax){
         super();
         setXmin(xwMin);
         setXmax(xMax);
@@ -23,9 +23,8 @@ public class Window {
     public Point mapToViewport(Window viewport, Point point){
         Point viewportPoint = new Point();
 
-        viewportPoint.setX(viewport.getXmin() + ((point.getX()-getXmin())/(getXmax()-getXmin()))*(viewport.getXmax()-viewport.getXmin()));
-
-        viewportPoint.setY(viewport.getYmin() + ((point.getY()-getYmin())/(getYmax()-getYmin()))*(viewport.getYmax()-viewport.getYmin()));
+        viewportPoint.setX(viewport.getXmin() + ((point.getX()-getXmin())/(getXmax()-getXmin()))*(viewport.getXmax() - viewport.getXmin()));
+        viewportPoint.setY(viewport.getYmin() + ((point.getY()-getYmin())/(getYmax()-getYmin()))*(viewport.getYmax() - viewport.getYmin()));
 
         return viewportPoint;
     }
@@ -36,25 +35,25 @@ public class Window {
 
     /* setters and getters */
     public int getXmin() {
-        return xMin;
+        return this.xMin;
     }
     public void setXmin(int xMin) {
         this.xMin = xMin;
     }
     public int getYmin() {
-        return yMin;
+        return this.yMin;
     }
     public void setYmin(int yMin) {
         this.yMin = yMin;
     }
     public int getXmax() {
-        return xMax;
+        return this.xMax;
     }
     public void setXmax(int xMax) {
         this.xMax = xMax;
     }
     public int getYmax() {
-        return yMax;
+        return this.yMax;
     }
     public void setYmax(int yMax) {
         this.yMax = yMax;
