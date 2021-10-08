@@ -46,7 +46,7 @@ public class Gui extends JFrame{
 
     private JMenu jmFile, _optionsMenu, _optionsMenuColors, _optionsMenuWindowType, jmHelp;
     private JMenuItem _menuSaveFile, _menuReadFile, jmExit, jmAbout, _optionsMenuColorsCel, 
-    _optionsMenuColorsBackground, _optionsMenuColorsOriginals;
+    _optionsMenuColorsBackground, _optionsMenuDefaultColors;
     private JCheckBoxMenuItem _rbItemMenu;
     /*---------------------------------------------*/
 
@@ -164,25 +164,24 @@ public class Gui extends JFrame{
 
         _optionsMenuColors.add(_optionsMenuColorsCel);
 
-        _optionsMenuColorsBackground = new JMenuItem("Cor de Background da Celula", KeyEvent.VK_F);
+        _optionsMenuColorsBackground = new JMenuItem("Cel background color", KeyEvent.VK_F);
         _optionsMenuColorsBackground.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_F, ActionEvent.ALT_MASK));
         _optionsMenuColorsBackground.getAccessibleContext().setAccessibleDescription(
-                "This doesn't really do anything");
-        //       _optionsMenuColorsBackground.addActionListener(this);
+                "");
+        
         _optionsMenuColors.add(_optionsMenuColorsBackground);
 
-        // Adiciona separador
+        
         _optionsMenuColors.addSeparator();
-        // Cores item Cor Borda
-        _optionsMenuColorsOriginals = new JMenuItem("Restaura Cores Originais", KeyEvent.VK_R);
-        _optionsMenuColorsOriginals.setAccelerator(KeyStroke.getKeyStroke(
+        
+        _optionsMenuDefaultColors = new JMenuItem("Restore default colors", KeyEvent.VK_R);
+        _optionsMenuDefaultColors.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_R, ActionEvent.ALT_MASK));
-        _optionsMenuColorsOriginals.getAccessibleContext().setAccessibleDescription(
-                "This doesn't really do anything");
-        //        _optionsMenuColorsOriginais.addActionListener(this);
-        _optionsMenuColorsOriginals.setEnabled(false);
-        _optionsMenuColors.add(_optionsMenuColorsOriginals);
+        _optionsMenuDefaultColors.getAccessibleContext().setAccessibleDescription(
+                "");
+        _optionsMenuDefaultColors.setEnabled(false);
+        _optionsMenuColors.add(_optionsMenuDefaultColors);
 
         // Help
         jmHelp = new JMenu("Help");
@@ -200,18 +199,15 @@ public class Gui extends JFrame{
         jmHelp.add(jmAbout);
 
         setJMenuBar(jMenuBar);
-
-        
-        
     }
 
     private void about(){
-        String texto = "Testador de Primitivos Gr�ficos\nVersao 1.0\n\n"
-                + "(c) Copyright 2021. Todos os direitos reservados.\n\n"
-                + "Computa��o Gr�fica e Processamento de Imagens\n"
-                + "Prof. Dr. Julio Arakaki\nCiencia da Computacao - PUCSP";
+        String text = "Graphic Editor\nVersion 1.0\n\n"
+                + "(c) Copyright 2021. All rights reserved.\n\n"
+                + "Computacao Grafica e Processamento de Imagens\n"
+                + "Eric Candido\nCiencia da Computacao - PUCSP";
 
-        JOptionPane.showMessageDialog(null, texto, "Sobre Testador de Primitivos Gr�ficos", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, text, "About Graphic Editor", JOptionPane.INFORMATION_MESSAGE);
     }
 
 }
