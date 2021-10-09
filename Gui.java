@@ -30,6 +30,7 @@ public class Gui extends JFrame{
     private JToolBar toolBar = new JToolBar();
 
     private JButton jbPoint = new JButton("Point");
+    private JButton jbLine = new JButton("Line");
     private JButton jbColor = new JButton("Color");
     private JButton jbClear = new JButton("Clear");
     private JButton jbExit = new JButton("Exit");
@@ -61,6 +62,7 @@ public class Gui extends JFrame{
 
         // Add components to the toolBar
         toolBar.add(jbPoint);
+        toolBar.add(jbLine);
         toolBar.add(jbClear);
         toolBar.add(jbColor);
         toolBar.add(jlLineWeight);
@@ -81,6 +83,10 @@ public class Gui extends JFrame{
         /* Component Listeners */
         jbPoint.addActionListener(e -> {
             currentType = PrimitiveTypes.POINT;
+            drawingPainel.setType(currentType);
+        });
+        jbLine.addActionListener(e -> {
+            currentType = PrimitiveTypes.LINE;
             drawingPainel.setType(currentType);
         });
         jbClear.addActionListener(e -> {

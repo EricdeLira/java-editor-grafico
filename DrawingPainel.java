@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import point.PointDrawings;
+import line.LineDrawings;
 import window.Window;
 import constants.Constants;
 import constants.PrimitiveTypes;
@@ -138,6 +139,11 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             PointDrawings.drawPointOnWindow(g, x1, y1, "", getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
                 PointDrawings.drawPointOnViewport(g, window, viewport, x1, y1, "", getLineWeight(), getCurrentColor());
+            }
+        }else if(type == PrimitiveTypes.LINE){
+            LineDrawings.drawLineOnWindow(g, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                LineDrawings.drawLineOnViewport(g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
             }
         }
     }
