@@ -31,6 +31,7 @@ public class Gui extends JFrame{
 
     private JButton jbPoint = new JButton("Point");
     private JButton jbLine = new JButton("Line");
+    private JButton jbCircle = new JButton("Circle");
     private JButton jbColor = new JButton("Color");
     private JButton jbClear = new JButton("Clear");
     private JButton jbExit = new JButton("Exit");
@@ -45,7 +46,7 @@ public class Gui extends JFrame{
     /* Menu bar and components */
     private JMenuBar jMenuBar = new JMenuBar();
 
-    private JMenu jmFile, _optionsMenu, _optionsMenuColors, _optionsMenuWindowType, jmHelp;
+    private JMenu jmFile, _optionsMenu, _optionsMenuColors, /*_optionsMenuWindowType,*/ jmHelp;
     private JMenuItem _menuSaveFile, _menuReadFile, jmExit, jmAbout, _optionsMenuColorsCel, 
     _optionsMenuColorsBackground, _optionsMenuDefaultColors;
     private JCheckBoxMenuItem _rbItemMenu;
@@ -63,6 +64,7 @@ public class Gui extends JFrame{
         // Add components to the toolBar
         toolBar.add(jbPoint);
         toolBar.add(jbLine);
+        toolBar.add(jbCircle);
         toolBar.add(jbClear);
         toolBar.add(jbColor);
         toolBar.add(jlLineWeight);
@@ -87,6 +89,10 @@ public class Gui extends JFrame{
         });
         jbLine.addActionListener(e -> {
             currentType = PrimitiveTypes.LINE;
+            drawingPainel.setType(currentType);
+        });
+        jbCircle.addActionListener(e -> {
+            currentType = PrimitiveTypes.CIRCLE;
             drawingPainel.setType(currentType);
         });
         jbClear.addActionListener(e -> {

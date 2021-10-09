@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import point.PointDrawings;
 import line.LineDrawings;
+import circle.CircleDrawings;
 import window.Window;
 import constants.Constants;
 import constants.PrimitiveTypes;
@@ -144,6 +145,11 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             LineDrawings.drawLineOnWindow(g, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
                 LineDrawings.drawLineOnViewport(g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            }
+        }else if(type == PrimitiveTypes.CIRCLE){
+            CircleDrawings.drawCircleOnWindow(g, x1, y1, getRadius(), "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                CircleDrawings.drawCircleOnViewport(g, window, viewport, x1, y1, getRadius(), "", getLineWeight(), getCurrentColor());
             }
         }
     }
