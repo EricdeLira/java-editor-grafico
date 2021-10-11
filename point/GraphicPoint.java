@@ -9,7 +9,7 @@ public class GraphicPoint extends Point {
     Color nameColor = Color.BLACK;
     int diameter = 1;
 
-    GraphicPoint(int x, int y){
+    public GraphicPoint(int x, int y){
         super((double)x, (double)y);
         setColor(Color.black);
         setNameColor(Color.black);
