@@ -129,6 +129,8 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 numClicks = 0;
                 if(!((x1 == x2 && x2 == x3) || (y1 == y2 && y2 == y3))){
                     paint(g);
+                }else{
+                    this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " INVALID POINTS TO DRAW A TRIANGLE!!!");
                 }
             }
         }
