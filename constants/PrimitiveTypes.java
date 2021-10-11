@@ -1,5 +1,5 @@
 package constants;
 
 public enum PrimitiveTypes {
-    POINT, LINE, CIRCLE, NONE
+    POINT, LINE, CIRCLE, TRIANGLE, RECTANGLE, POLYGON, NONE
 }
