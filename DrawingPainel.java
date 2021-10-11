@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import point.PointDrawings;
 import line.LineDrawings;
 import circle.CircleDrawings;
+import triangle.TriangleDrawings;
 import window.Window;
 import constants.Constants;
 import constants.PrimitiveTypes;
@@ -24,8 +25,8 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
     Color currentColor;
     int lineWeight;
     int radius;
-    int x1, y1, x2, y2;
-    boolean firstClick = true;
+    int x1, y1, x2, y2, x3, y3;
+    int numClicks = 0;
 
     public DrawingPainel(JLabel msg, PrimitiveTypes type, Color currentColor, int lineWeight){
         setType(type);
@@ -89,29 +90,46 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             y1 = e.getY();
             paint(g);
         } else if(type == PrimitiveTypes.LINE){
-            if(firstClick){
+            if(numClicks == 0){
                 x1 = e.getX();
                 y1 = e.getY();
-                firstClick = false;
+                numClicks++;
             }else{
                 x2 = e.getX();
                 y2 = e.getY();
-                firstClick = true;
+                numClicks = 0;
                 paint(g);
             }
         } else if(type == PrimitiveTypes.CIRCLE){
-            if(firstClick){
+            if(numClicks == 0){
                 x1 = e.getX();
                 y1 = e.getY();
-                firstClick = false;
+                numClicks++;
             }else{
                 x2 = (int)e.getX();
                 y2 = (int)e.getY();
-                firstClick = true;
+                numClicks = 0;
 
                 radius = (int)Math.sqrt(Math.pow((y2-y1), 2) + Math.pow((x2-x1), 2));
                 setRadius(radius);
                 paint(g);
+            }
+        } else if(type == PrimitiveTypes.TRIANGLE){
+            if(numClicks == 0){
+                x1 = e.getX();
+                y1 = e.getY();
+                numClicks++;
+            }else if(numClicks == 1){
+                x2 = e.getX();
+                y2 = e.getY();
+                numClicks++;
+            }else if(numClicks == 2){
+                x3 = e.getX();
+                y3 = e.getY();
+                numClicks = 0;
+                if(!((x1 == x2 && x2 == x3) || (y1 == y2 && y2 == y3))){
+                    paint(g);
+                }
             }
         }
     }
@@ -150,6 +168,11 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             CircleDrawings.drawCircleOnWindow(g, x1, y1, getRadius(), "", getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
                 CircleDrawings.drawCircleOnViewport(g, window, viewport, x1, y1, getRadius(), "", getLineWeight(), getCurrentColor());
+            }
+        }else if(type == PrimitiveTypes.TRIANGLE){
+            TriangleDrawings.drawTriangleOnWindow(g, x1, y1, x2, y2, x3, y3, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                TriangleDrawings.drawTriangleOnViewport(g, window, viewport, x1, y1, x2, y2, x3, y3, "", getLineWeight(), getCurrentColor());
             }
         }
     }

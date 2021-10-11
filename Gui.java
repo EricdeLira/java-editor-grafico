@@ -32,6 +32,7 @@ public class Gui extends JFrame{
     private JButton jbPoint = new JButton("Point");
     private JButton jbLine = new JButton("Line");
     private JButton jbCircle = new JButton("Circle");
+    private JButton jbTriangle = new JButton("Triangle");
     private JButton jbColor = new JButton("Color");
     private JButton jbClear = new JButton("Clear");
     private JButton jbExit = new JButton("Exit");
@@ -65,6 +66,7 @@ public class Gui extends JFrame{
         toolBar.add(jbPoint);
         toolBar.add(jbLine);
         toolBar.add(jbCircle);
+        toolBar.add(jbTriangle);
         toolBar.add(jbClear);
         toolBar.add(jbColor);
         toolBar.add(jlLineWeight);
@@ -93,6 +95,10 @@ public class Gui extends JFrame{
         });
         jbCircle.addActionListener(e -> {
             currentType = PrimitiveTypes.CIRCLE;
+            drawingPainel.setType(currentType);
+        });
+        jbTriangle.addActionListener(e -> {
+            currentType = PrimitiveTypes.TRIANGLE;
             drawingPainel.setType(currentType);
         });
         jbClear.addActionListener(e -> {
