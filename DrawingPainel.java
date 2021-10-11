@@ -8,11 +8,14 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import point.GraphicPoint;
+
 import point.PointDrawings;
 import line.LineDrawings;
 import circle.CircleDrawings;
 import triangle.TriangleDrawings;
 import rectangle.RectangleDrawings;
+import polygon.PolygonDrawings;
 import window.Window;
 import constants.Constants;
 import constants.PrimitiveTypes;
@@ -28,6 +31,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
     int radius;
     int x1, y1, x2, y2, x3, y3;
     int numClicks = 0;
+    GraphicPoint p[] = new GraphicPoint[0];
 
     public DrawingPainel(JLabel msg, PrimitiveTypes type, Color currentColor, int lineWeight){
         setType(type);
@@ -147,9 +151,21 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     paint(g);
                 }else{
                     this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " - INVALID POINTS TO DRAW A RECTANGLE!!!");
-                }
-                
+                } 
             }
+        } else if(type == PrimitiveTypes.POLYGON){
+            if (e.getClickCount() == 2 && !e.isConsumed()){
+                e.consume();
+                paint(g);
+                p = new GraphicPoint[0];
+           }else{
+                GraphicPoint pAux[] = new GraphicPoint[p.length + 1];
+                for (int i = 0; i < p.length; i++){
+                    pAux[i] = p[i];
+                }
+                pAux[pAux.length-1] = new GraphicPoint(e.getX(), e.getY());
+                p = pAux;
+           }
         }
     }
 
@@ -197,6 +213,11 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             RectangleDrawings.drawRectangleOnWindow(g, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
                 RectangleDrawings.drawRectangleOnViewport(g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            }
+        } else if(type == PrimitiveTypes.POLYGON){
+            PolygonDrawings.drawPolygonOnWindow(g, p, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                PolygonDrawings.drawPolygonOnViewport(g, window, viewport, p, "", getLineWeight(), getCurrentColor());
             }
         }
     }
