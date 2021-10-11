@@ -12,6 +12,7 @@ import point.PointDrawings;
 import line.LineDrawings;
 import circle.CircleDrawings;
 import triangle.TriangleDrawings;
+import rectangle.RectangleDrawings;
 import window.Window;
 import constants.Constants;
 import constants.PrimitiveTypes;
@@ -130,8 +131,24 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 if(!((x1 == x2 && x2 == x3) || (y1 == y2 && y2 == y3))){
                     paint(g);
                 }else{
-                    this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " INVALID POINTS TO DRAW A TRIANGLE!!!");
+                    this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " - INVALID POINTS TO DRAW A TRIANGLE!!!");
                 }
+            }
+        } else if( type == PrimitiveTypes.RECTANGLE){
+            if(numClicks == 0){
+                x1 = e.getX();
+                y1 = e.getY();
+                numClicks++;
+            }else{
+                x2 = e.getX();
+                y2 = e.getY();
+                numClicks = 0;
+                if(!(x1 == x2 || y1 == y2)){
+                    paint(g);
+                }else{
+                    this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " - INVALID POINTS TO DRAW A RECTANGLE!!!");
+                }
+                
             }
         }
     }
@@ -175,6 +192,11 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             TriangleDrawings.drawTriangleOnWindow(g, x1, y1, x2, y2, x3, y3, "", getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
                 TriangleDrawings.drawTriangleOnViewport(g, window, viewport, x1, y1, x2, y2, x3, y3, "", getLineWeight(), getCurrentColor());
+            }
+        }else if(type == PrimitiveTypes.RECTANGLE){
+            RectangleDrawings.drawRectangleOnWindow(g, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                RectangleDrawings.drawRectangleOnViewport(g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
             }
         }
     }
