@@ -156,8 +156,13 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         } else if(type == PrimitiveTypes.POLYGON){
             if (e.getClickCount() == 2 && !e.isConsumed()){
                 e.consume();
-                paint(g);
+                if(numClicks > 2){
+                    paint(g);
+                }else{
+                    this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " - INVALID POINTS TO DRAW A POLYGON!!!");
+                }
                 p = new GraphicPoint[0];
+                numClicks = 0;
            }else{
                 GraphicPoint pAux[] = new GraphicPoint[p.length + 1];
                 for (int i = 0; i < p.length; i++){
@@ -165,6 +170,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 }
                 pAux[pAux.length-1] = new GraphicPoint(e.getX(), e.getY());
                 p = pAux;
+                numClicks++;
            }
         }
     }
