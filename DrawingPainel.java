@@ -4,6 +4,10 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import com.google.gson.Gson;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,7 +23,7 @@ import polygon.PolygonDrawings;
 import window.Window;
 import constants.Constants;
 import constants.PrimitiveTypes;
-
+import save.SaveData;
 
 public class DrawingPainel extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -32,6 +36,11 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
     int x1, y1, x2, y2, x3, y3;
     int numClicks = 0;
     GraphicPoint p[] = new GraphicPoint[0];
+
+    FileWriter writeFile = null;
+    Gson gson = new Gson();
+
+    SaveData save = new SaveData();
 
     public DrawingPainel(JLabel msg, PrimitiveTypes type, Color currentColor, int lineWeight){
         setType(type);
@@ -93,6 +102,17 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         if(type == PrimitiveTypes.POINT){
             x1 = e.getX();
             y1 = e.getY();
+
+            double coord[] = new double[2];
+            coord[0] = (double)(x1-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+            coord[1] = (double)(y1-Constants.YW_MIN)/(Constants.YW_MAX-Constants.YW_MIN);
+            
+            String nome = getMsg().getText();
+            int esp = getLineWeight();
+            int rgb[] = getRgb();
+            
+            save.addPoint(nome, coord, rgb, esp);
+
             paint(g);
         } else if(type == PrimitiveTypes.LINE){
             if(numClicks == 0){
@@ -103,6 +123,19 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 x2 = e.getX();
                 y2 = e.getY();
                 numClicks = 0;
+
+                double coord[][] = new double[2][2];
+                coord[0][0] = (double)(x1-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+                coord[0][1] = (double)(y1-Constants.YW_MIN)/(Constants.YW_MAX-Constants.YW_MIN);
+                coord[1][0] = (double)(x2-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+                coord[1][1] = (double)(y2-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+
+                String nome = getMsg().getText();
+                int esp = getLineWeight();
+                int rgb[] = getRgb();
+                
+                save.addLine(nome, coord, rgb, esp);
+
                 paint(g);
             }
         } else if(type == PrimitiveTypes.CIRCLE){
@@ -227,4 +260,26 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             }
         }
     }
+
+    public int[] getRgb(){
+        Color cor = getCurrentColor();
+        int rgb[] = new int[3];
+        rgb[0] = cor.getRed();
+        rgb[1] = cor.getGreen();
+        rgb[2] = cor.getBlue();
+        return rgb;
+    }
+
+    public void saveFile(){
+        String json = gson.toJson(save);
+        try {
+            writeFile = new FileWriter("saida.json");
+            // Escreve no arquivo conteudo do Objeto JSON
+            writeFile.write(json);
+            writeFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
