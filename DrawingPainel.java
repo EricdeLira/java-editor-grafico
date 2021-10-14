@@ -150,6 +150,17 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
 
                 radius = (int)Math.sqrt(Math.pow((y2-y1), 2) + Math.pow((x2-x1), 2));
                 setRadius(radius);
+
+                double coord[] = new double[2];
+                coord[0] = (double)(x1-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+                coord[1] = (double)(y1-Constants.YW_MIN)/(Constants.YW_MAX-Constants.YW_MIN);
+
+                String nome = getMsg().getText();
+                int esp = getLineWeight();
+                int rgb[] = getRgb();
+                //OLHAR O RAIO
+               save.addCircle(nome, coord, radius, rgb, esp);
+
                 paint(g);
             }
         } else if(type == PrimitiveTypes.TRIANGLE){
