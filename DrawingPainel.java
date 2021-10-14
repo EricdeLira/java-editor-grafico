@@ -108,7 +108,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             coord[1] = (double)(y1-Constants.YW_MIN)/(Constants.YW_MAX-Constants.YW_MIN);
             
             String nome = getMsg().getText();
-            int esp = getLineWeight();
+            int esp = getLineWeight() + 1;
             int rgb[] = getRgb();
             
             save.addPoint(nome, coord, rgb, esp);
@@ -131,7 +131,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 coord[1][1] = (double)(y2-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
 
                 String nome = getMsg().getText();
-                int esp = getLineWeight();
+                int esp = getLineWeight() + 1;
                 int rgb[] = getRgb();
                 
                 save.addLine(nome, coord, rgb, esp);
@@ -156,7 +156,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 coord[1] = (double)(y1-Constants.YW_MIN)/(Constants.YW_MAX-Constants.YW_MIN);
 
                 String nome = getMsg().getText();
-                int esp = getLineWeight();
+                int esp = getLineWeight() + 1;
                 int rgb[] = getRgb();
                 //OLHAR O RAIO
                save.addCircle(nome, coord, radius, rgb, esp);
@@ -187,7 +187,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     coord[2][1] = (double)(y3-Constants.YW_MIN)/(Constants.YW_MAX-Constants.YW_MIN);
 
                     String nome = getMsg().getText();
-                    int esp = getLineWeight();
+                    int esp = getLineWeight() + 1;
                     int rgb[] = getRgb();
 
                     save.addTriangle(nome, coord, rgb, esp);
@@ -215,7 +215,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     coord[1][1] = (double)(y2-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
     
                     String nome = getMsg().getText();
-                    int esp = getLineWeight();
+                    int esp = getLineWeight() + 1;
                     int rgb[] = getRgb();
 
                     save.addRectangle(nome, coord, rgb, esp);
@@ -229,6 +229,20 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             if (e.getClickCount() == 2 && !e.isConsumed()){
                 e.consume();
                 if(numClicks > 2){
+                    
+                    double coord[][] = new double[p.length][2];
+
+                    for(int i = 0; i < p.length; i++){
+                        coord[i][0] = (p[i].getX() - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                        coord[i][1] = (p[i].getY() - Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    }
+
+                    String nome = getMsg().getText();
+                    int esp = getLineWeight() + 1;
+                    int rgb[] = getRgb();
+
+                    save.addPolygon(nome, coord, rgb, esp);
+
                     paint(g);
                 }else{
                     this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " - INVALID POINTS TO DRAW A POLYGON!!!");
@@ -312,8 +326,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
     public void saveFile(){
         String json = gson.toJson(save);
         try {
-            writeFile = new FileWriter("saida.json");
-            // Escreve no arquivo conteudo do Objeto JSON
+            writeFile = new FileWriter("save.json");
             writeFile.write(json);
             writeFile.close();
         } catch (IOException e) {

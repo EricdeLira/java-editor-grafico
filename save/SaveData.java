@@ -9,6 +9,7 @@ public class SaveData {
     ArrayList<SaveCircle> circulos = new ArrayList<SaveCircle>();
     ArrayList<SaveLine> triangulos = new ArrayList<SaveLine>();
     ArrayList<SaveLine> retangulos = new ArrayList<SaveLine>();
+    ArrayList<SaveLine> poligonos = new ArrayList<SaveLine>();
 
     public SaveData(){
 
@@ -39,4 +40,8 @@ public class SaveData {
         retangulos.add(li);
     }
 
+    public void addPolygon(String nome, double coord[][], int cor[], int esp){
+        SaveLine poly = new SaveLine(nome, coord, cor, esp);
+        poligonos.add(poly);
+    }
 }
