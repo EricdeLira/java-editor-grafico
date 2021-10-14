@@ -207,6 +207,19 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 y2 = e.getY();
                 numClicks = 0;
                 if(!(x1 == x2 || y1 == y2)){
+
+                    double coord[][] = new double[2][2];
+                    coord[0][0] = (double)(x1-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+                    coord[0][1] = (double)(y1-Constants.YW_MIN)/(Constants.YW_MAX-Constants.YW_MIN);
+                    coord[1][0] = (double)(x2-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+                    coord[1][1] = (double)(y2-Constants.XW_MIN)/(Constants.XW_MAX-Constants.XW_MIN);
+    
+                    String nome = getMsg().getText();
+                    int esp = getLineWeight();
+                    int rgb[] = getRgb();
+
+                    save.addRectangle(nome, coord, rgb, esp);
+
                     paint(g);
                 }else{
                     this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " - INVALID POINTS TO DRAW A RECTANGLE!!!");
