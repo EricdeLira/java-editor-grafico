@@ -94,6 +94,6 @@ public class GraphicPolygon extends Polygon{
         
 
         g.setColor(getPolygonColor());
-        g.drawString(getPolygonName(), (int)getP(0).getX() + getLineWeight(), (int)getP(0).getY());
+        //g.drawString(getPolygonName(), (int)getP().getX() + getLineWeight(), (int)getP().getY());
     }
 }

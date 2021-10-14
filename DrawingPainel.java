@@ -242,7 +242,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     int rgb[] = getRgb();
 
                     save.addPolygon(nome, coord, rgb, esp);
-
+                    
                     paint(g);
                 }else{
                     this.msg.setText("("+e.getX() + ", " + e.getY() + ") - " + getType() + " - INVALID POINTS TO DRAW A POLYGON!!!");
