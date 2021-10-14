@@ -7,6 +7,7 @@ public class SaveData {
     ArrayList<SavePoint> pontos = new ArrayList<SavePoint>();
     ArrayList<SaveLine> retas = new ArrayList<SaveLine>();
     ArrayList<SaveCircle> circulos = new ArrayList<SaveCircle>();
+    ArrayList<SaveTriangle> triangulos = new ArrayList<SaveTriangle>();
 
     public SaveData(){
 
@@ -25,6 +26,11 @@ public class SaveData {
     public void addCircle(String nome, double coord[], double raio, int cor[], int esp){
         SaveCircle cr = new SaveCircle(nome, coord, raio, cor, esp);
         circulos.add(cr);
+    }
+
+    public void addTriangle(String nome, double coord[][], int cor[], int esp){
+        SaveTriangle tr = new SaveTriangle(nome, coord, cor, esp);
+        triangulos.add(tr);
     }
 
 }
