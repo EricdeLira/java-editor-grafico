@@ -61,6 +61,7 @@ public class Gui extends JFrame{
     public Gui(int width, int height){
         super("Graphic Editor");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setSize(width, height);
         setVisible(true);
 
