@@ -167,6 +167,9 @@ public class Gui extends JFrame{
         _menuReadFile = new JMenuItem("Read", KeyEvent.VK_L);
         _menuReadFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK));
         _menuReadFile.getAccessibleContext().setAccessibleDescription("");
+        _menuReadFile.addActionListener(e -> {
+            drawingPainel.readFile();
+        });
         jmFile.add(_menuReadFile);
 
         jmExit = new JMenuItem("Exit", KeyEvent.VK_S);

@@ -14,4 +14,20 @@ public class SaveLine {
         this.esp = esp;
     }
 
+    public String getNome(){
+        return this.nome;
+    }
+
+    public double[][] getCoord(){
+        return this.pontos;
+    }
+
+    public int[] getCor(){
+        return this.cor;
+    }
+
+    public int getEsp(){
+        return this.esp;
+    }
+
 }

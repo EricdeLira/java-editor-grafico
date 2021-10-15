@@ -6,11 +6,23 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.sql.Savepoint;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.plaf.ColorUIResource;
 
 import point.GraphicPoint;
 
@@ -24,6 +36,9 @@ import window.Window;
 import constants.Constants;
 import constants.PrimitiveTypes;
 import save.SaveData;
+import save.SaveCircle;
+import save.SaveLine;
+import save.SavePoint;
 
 public class DrawingPainel extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -333,5 +348,237 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             e.printStackTrace();
         }
     }
+
+    public void readFile(){
+        JSONObject jsonObject;
+        JSONArray jsonObjectArray;
+        JSONParser parser = new JSONParser();
+        Gson gson = new Gson();
+
+        ArrayList<SavePoint> pontos = new ArrayList<SavePoint>();
+        ArrayList<SaveLine> retas = new ArrayList<SaveLine>();
+        ArrayList<SaveCircle> circulos = new ArrayList<SaveCircle>();
+        ArrayList<SaveLine> triangulos = new ArrayList<SaveLine>();
+        ArrayList<SaveLine> retangulos = new ArrayList<SaveLine>();
+        ArrayList<SaveLine> poligonos = new ArrayList<SaveLine>();
+
+        try {
+            jsonObject = (JSONObject) parser.parse(new FileReader("save.json")); 
+            
+            jsonObjectArray = (JSONArray)jsonObject.get("pontos");
+            for(int i = 0; i < jsonObjectArray.size(); i++){
+                SavePoint p = gson.fromJson(jsonObjectArray.get(i).toString(), SavePoint.class);
+                pontos.add(p);
+            }
+            jsonObjectArray = (JSONArray)jsonObject.get("retas");
+            for(int i = 0; i < jsonObjectArray.size(); i++){
+                SaveLine p = gson.fromJson(jsonObjectArray.get(i).toString(), SaveLine.class);
+                retas.add(p);
+            }
+            jsonObjectArray = (JSONArray)jsonObject.get("circulos");
+            for(int i = 0; i < jsonObjectArray.size(); i++){
+                SaveCircle p = gson.fromJson(jsonObjectArray.get(i).toString(), SaveCircle.class);
+                circulos.add(p);
+            }
+            jsonObjectArray = (JSONArray)jsonObject.get("triangulos");
+            for(int i = 0; i < jsonObjectArray.size(); i++){
+                SaveLine p = gson.fromJson(jsonObjectArray.get(i).toString(), SaveLine.class);
+                triangulos.add(p);
+            }
+            jsonObjectArray = (JSONArray)jsonObject.get("retangulos");
+            for(int i = 0; i < jsonObjectArray.size(); i++){
+                SaveLine p = gson.fromJson(jsonObjectArray.get(i).toString(), SaveLine.class);
+                retangulos.add(p);
+            }
+            jsonObjectArray = (JSONArray)jsonObject.get("poligonos");
+            for(int i = 0; i < jsonObjectArray.size(); i++){
+                SaveLine p = gson.fromJson(jsonObjectArray.get(i).toString(), SaveLine.class);
+                poligonos.add(p);
+            }
+            drawReadFile(pontos, retas, circulos, triangulos, retangulos, poligonos);
+        } catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    }
+
+    public void drawReadFile(ArrayList<SavePoint> pontos, ArrayList<SaveLine> retas,ArrayList<SaveCircle> circulos,ArrayList<SaveLine> triangulos, ArrayList<SaveLine> retangulos,ArrayList<SaveLine> poligonos){
+        Graphics g = getGraphics();
+        Window window = new Window(Constants.XW_MIN, Constants.YW_MIN, Constants.XW_MAX, Constants.YW_MAX);
+        Window viewport = new Window(Constants.XV_MIN, Constants.YV_MIN, Constants.XV_MAX, Constants.YV_MAX);
+
+        for(SavePoint p: pontos){
+            String nome = p.getNome();
+            double[] coord = p.getCoord();
+            int[] cor = p.getCor();
+            int esp = p.getEsp();
+
+            save.addPoint(nome, coord, cor, esp);
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+            
+            double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            this.x1 = (int)x1_;
+            this.y1 = (int)y1_;
+
+            //System.out.println(p.getNome() + " - ("+x1+", "+ y1+") - "+esp);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+            
+            PointDrawings.drawPointOnWindow((Graphics2D)g, x1, y1, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                PointDrawings.drawPointOnViewport((Graphics2D)g, window, viewport, x1, y1, "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        for(SaveLine l: retas){
+            String nome = l.getNome();
+            double[][] coord = l.getCoord();
+            int[] cor = l.getCor();
+            int esp = l.getEsp();
+
+            save.addLine(nome, coord, cor, esp);
+
+            double x1_ = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            this.x1 = (int)x1_;
+            this.y1 = (int)y1_;
+            this.x2 = (int)x2_;
+            this.y2 = (int)y2_;
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            LineDrawings.drawLineOnWindow((Graphics2D)g, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                LineDrawings.drawLineOnViewport((Graphics2D)g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        for(SaveCircle c: circulos){
+            String nome = c.getNome();
+            double[] coord = c.getCoord();
+            double raio = c.getRaio();
+            int[] cor = c.getCor();
+            int esp = c.getEsp();
+
+            double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+
+            this.x1 = (int)x1_;
+            this.y1 = (int)y1_;
+
+            setRadius((int)raio);
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            CircleDrawings.drawCircleOnWindow((Graphics2D)g, x1, y1, getRadius(), "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                CircleDrawings.drawCircleOnViewport((Graphics2D)g, window, viewport, x1, y1, getRadius(), "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        for(SaveLine t: triangulos){
+            String nome = t.getNome();
+            double[][] coord = t.getCoord();
+            int[] cor = t.getCor();
+            int esp = t.getEsp();
+
+            save.addTriangle(nome, coord, cor, esp);
+
+            double x1_ = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x3_ = coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y3_ = coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            this.x1 = (int)x1_;
+            this.y1 = (int)y1_;
+            this.x2 = (int)x2_;
+            this.y2 = (int)y2_;
+            this.x3 = (int)x3_;
+            this.y3 = (int)y3_;
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            TriangleDrawings.drawTriangleOnWindow((Graphics2D)g, x1, y1, x2, y2, x3, y3, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                TriangleDrawings.drawTriangleOnViewport((Graphics2D)g, window, viewport, x1, y1, x2, y2, x3, y3, "", getLineWeight(), getCurrentColor());
+            }
+
+        }
+
+        for(SaveLine r: retangulos){
+            String nome = r.getNome();
+            double[][] coord = r.getCoord();
+            int[] cor = r.getCor();
+            int esp = r.getEsp();
+
+            save.addRectangle(nome, coord, cor, esp);
+
+            double x1_ = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            this.x1 = (int)x1_;
+            this.y1 = (int)y1_;
+            this.x2 = (int)x2_;
+            this.y2 = (int)y2_;
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            RectangleDrawings.drawRectangleOnWindow((Graphics2D)g, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                RectangleDrawings.drawRectangleOnViewport((Graphics2D)g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        for(SaveLine p: poligonos){
+            String nome = p.getNome();
+            double[][] coord = p.getCoord();
+            int[] cor = p.getCor();
+            int esp = p.getEsp();
+
+            save.addPolygon(nome, coord, cor, esp);
+
+            GraphicPoint pt[] = new GraphicPoint[coord.length];
+            for(int i = 0; i < coord.length; i++){
+                double x1_ = coord[i][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                double y1_ = coord[i][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                pt[i] = new GraphicPoint((int)x1_, (int)y1_);
+            }
+            
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            PolygonDrawings.drawPolygonOnWindow((Graphics2D)g, pt, "", getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                PolygonDrawings.drawPolygonOnViewport((Graphics2D)g, window, viewport, pt, "", getLineWeight(), getCurrentColor());
+            }
+
+        }
+    }
+
 
 }

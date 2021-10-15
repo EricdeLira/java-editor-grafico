@@ -14,4 +14,19 @@ public class SavePoint {
         this.esp = esp;
     }
 
+    public String getNome(){
+        return this.nome;
+    }
+
+    public double[] getCoord(){
+        return this.coord;
+    }
+
+    public int[] getCor(){
+        return this.cor;
+    }
+
+    public int getEsp(){
+        return this.esp;
+    }
 }
