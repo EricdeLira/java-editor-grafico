@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -9,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -168,7 +170,16 @@ public class Gui extends JFrame{
         _menuReadFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK));
         _menuReadFile.getAccessibleContext().setAccessibleDescription("");
         _menuReadFile.addActionListener(e -> {
-            drawingPainel.readFile();
+            
+            JFileChooser fileChooser = new JFileChooser();
+            
+            int response = fileChooser.showOpenDialog(null);
+            if(response == 0){
+                File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                drawingPainel.readFile(file.toString());
+            }
+            
+            
         });
         jmFile.add(_menuReadFile);
 

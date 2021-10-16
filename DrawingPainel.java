@@ -349,7 +349,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
-    public void readFile(){
+    public void readFile(String file){
         JSONObject jsonObject;
         JSONArray jsonObjectArray;
         JSONParser parser = new JSONParser();
@@ -363,7 +363,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         ArrayList<SaveLine> poligonos = new ArrayList<SaveLine>();
 
         try {
-            jsonObject = (JSONObject) parser.parse(new FileReader("save.json")); 
+            jsonObject = (JSONObject) parser.parse(new FileReader(file)); 
             
             jsonObjectArray = (JSONArray)jsonObject.get("pontos");
             for(int i = 0; i < jsonObjectArray.size(); i++){
