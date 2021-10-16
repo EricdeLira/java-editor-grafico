@@ -39,6 +39,7 @@ public class Gui extends JFrame{
     private JButton jbPolygon = new JButton("Polygon");
     private JButton jbColor = new JButton("Color");
     private JButton jbClear = new JButton("Clear");
+    private JButton jbClearAll = new JButton("Clear Memory");
     private JButton jbExit = new JButton("Exit");
 
     private JLabel jlLineWeight = new JLabel(" Lineweight: " + String.format("%-5s", 1));
@@ -75,6 +76,7 @@ public class Gui extends JFrame{
         toolBar.add(jbRectangle);
         toolBar.add(jbPolygon);
         toolBar.add(jbClear);
+        toolBar.add(jbClearAll);
         toolBar.add(jbColor);
         toolBar.add(jlLineWeight);
         toolBar.add(jsLineWeight);
@@ -117,6 +119,15 @@ public class Gui extends JFrame{
             drawingPainel.setType(currentType);
         });
         jbClear.addActionListener(e -> {
+            drawingPainel.removeAll();
+            jsLineWeight.setValue(1);
+            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT-20);
+            drawingPainel.setCurrentColor(Color.BLACK);
+            jbColor.setForeground(Color.BLACK);
+            currentType = PrimitiveTypes.NONE;
+            drawingPainel.setType(currentType);
+        });
+        jbClearAll.addActionListener(e -> {
             drawingPainel.removeAll();
             jsLineWeight.setValue(1);
             drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT-20);
