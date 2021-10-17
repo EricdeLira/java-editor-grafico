@@ -34,11 +34,13 @@ public class GraphicRectangle extends Rectangle{
 
     public GraphicRectangle(GraphicPoint p1, GraphicPoint p2){
         super (p1, p2);
+        setRectangleName("");
     }
 
     public GraphicRectangle(GraphicPoint p1, GraphicPoint p2, Color color){
         super (p1, p2);
         setRectangleColor(color);
+        setRectangleName("");
     }
 
     public GraphicRectangle(GraphicPoint p1, GraphicPoint p2, Color color, String name){

@@ -11,6 +11,7 @@ public class GraphicCircle extends Circle{
 
     public GraphicCircle(double x, double y, double radius){
         super(x, y, radius);
+        setCircleName("");
     }
     public GraphicCircle(int xCenter, int yCenter, int radius, Color color, String name, int lineWeight){
         super((double) xCenter, (double) yCenter, (double) radius);

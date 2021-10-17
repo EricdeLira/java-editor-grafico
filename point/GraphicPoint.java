@@ -33,6 +33,7 @@ public class GraphicPoint extends Point {
     public GraphicPoint(int x, int y, Color color, int diameter){
         this(x, y, color);
         setDiameter(diameter);
+        setName("");
     }
 
     public GraphicPoint(int x, int y, Color color, String name, int diameter){

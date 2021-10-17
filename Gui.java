@@ -5,10 +5,9 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -38,12 +37,15 @@ public class Gui extends JFrame{
     private JButton jbRectangle = new JButton("Rectangle");
     private JButton jbPolygon = new JButton("Polygon");
     private JButton jbColor = new JButton("Color");
-    private JButton jbClear = new JButton("Clear");
-    private JButton jbClearAll = new JButton("Clear Memory");
+    private JButton jbEdit = new JButton("Edit");
     private JButton jbExit = new JButton("Exit");
 
     private JLabel jlLineWeight = new JLabel(" Lineweight: " + String.format("%-5s", 1));
     private JSlider jsLineWeight = new JSlider(1, 50, 1);
+
+    private JLabel jlEdit = new JLabel("Edit: ");
+    private JTextField jtfEdit = new JTextField(20);
+    
 
     private JCheckBox jcbUsingViewport = new JCheckBox("Viewport");
     boolean usingViewport = false;
@@ -52,10 +54,8 @@ public class Gui extends JFrame{
     /* Menu bar and components */
     private JMenuBar jMenuBar = new JMenuBar();
 
-    private JMenu jmFile, _optionsMenu, _optionsMenuColors, /*_optionsMenuWindowType,*/ jmHelp;
-    private JMenuItem _menuSaveFile, _menuReadFile, jmExit, jmAbout, _optionsMenuColorsCel, 
-    _optionsMenuColorsBackground, _optionsMenuDefaultColors;
-    private JCheckBoxMenuItem _rbItemMenu;
+    private JMenu jmFile, jmClear, jmHelp;
+    private JMenuItem _menuSaveFile, _menuReadFile, jmExit, jmAbout, _clear, _clearAll;
     /*---------------------------------------------*/
 
     private JLabel msg = new JLabel("Msg: ");
@@ -75,11 +75,12 @@ public class Gui extends JFrame{
         toolBar.add(jbTriangle);
         toolBar.add(jbRectangle);
         toolBar.add(jbPolygon);
-        toolBar.add(jbClear);
-        toolBar.add(jbClearAll);
         toolBar.add(jbColor);
         toolBar.add(jlLineWeight);
         toolBar.add(jsLineWeight);
+        toolBar.add(jlEdit);
+        toolBar.add(jtfEdit);
+        toolBar.add(jbEdit);
         toolBar.add(jcbUsingViewport);
         toolBar.add(jbExit);
 
@@ -118,24 +119,6 @@ public class Gui extends JFrame{
             currentType = PrimitiveTypes.POLYGON;
             drawingPainel.setType(currentType);
         });
-        jbClear.addActionListener(e -> {
-            drawingPainel.removeAll();
-            jsLineWeight.setValue(1);
-            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT-20);
-            drawingPainel.setCurrentColor(Color.BLACK);
-            jbColor.setForeground(Color.BLACK);
-            currentType = PrimitiveTypes.NONE;
-            drawingPainel.setType(currentType);
-        });
-        jbClearAll.addActionListener(e -> {
-            drawingPainel.removeAll();
-            jsLineWeight.setValue(1);
-            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT-20);
-            drawingPainel.setCurrentColor(Color.BLACK);
-            jbColor.setForeground(Color.BLACK);
-            currentType = PrimitiveTypes.NONE;
-            drawingPainel.setType(currentType);
-        });
         jbColor.addActionListener(e -> {
             Color color = JColorChooser.showDialog(null, " Pick a Color", msg.getForeground()); 
             if (color != null){ 
@@ -144,6 +127,13 @@ public class Gui extends JFrame{
             drawingPainel.setCurrentColor(currentColor); 
             jbColor.setForeground(currentColor);
         });  
+        jbEdit.addActionListener(e -> {
+                drawingPainel.removeAll();
+                drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
+                int [] color = {drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue()};
+                drawingPainel.readFile("save.json", jtfEdit.getText(), drawingPainel.getLineWeight(), color);
+            
+        });
         jsLineWeight.addChangeListener(e -> {
             currentLineWeight = jsLineWeight.getValue(); 
             jlLineWeight.setText(" Lineweight: " + String.format("%-5s", currentLineWeight));
@@ -169,8 +159,8 @@ public class Gui extends JFrame{
         jmFile.setMnemonic(KeyEvent.VK_A);
         jMenuBar.add(jmFile);
 
-        _menuSaveFile = new JMenuItem("Save", KeyEvent.VK_G);
-        _menuSaveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
+        _menuSaveFile = new JMenuItem("Save", KeyEvent.VK_S);
+        _menuSaveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
         _menuSaveFile.getAccessibleContext().setAccessibleDescription("");
         _menuSaveFile.addActionListener(e -> {
             drawingPainel.saveFile();
@@ -183,64 +173,72 @@ public class Gui extends JFrame{
         _menuReadFile.addActionListener(e -> {
             
             JFileChooser fileChooser = new JFileChooser();
-            
+
             int response = fileChooser.showOpenDialog(null);
             if(response == 0){
                 File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
-                drawingPainel.readFile(file.toString());
+                drawingPainel.removeAll();
+                drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
+                int [] color = {drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue()};
+                drawingPainel.readFile(file.toString(), jtfEdit.getText(), drawingPainel.getLineWeight(), color);
             }
             
             
         });
         jmFile.add(_menuReadFile);
 
-        jmExit = new JMenuItem("Exit", KeyEvent.VK_S);
-        jmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+        jmExit = new JMenuItem("Exit", KeyEvent.VK_E);
+        jmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
         jmExit.getAccessibleContext().setAccessibleDescription("");
         jmExit.addActionListener(e -> {
             System.exit(0);
         });
         jmFile.add(jmExit);
 
-        _optionsMenu = new JMenu("View");
-        _optionsMenu.setMnemonic(KeyEvent.VK_V);
-        jMenuBar.add(_optionsMenu);
+        // Clear
+        jmClear = new JMenu("Clear");
+        jmClear.setMnemonic(KeyEvent.VK_C);
+        jMenuBar.add(jmClear);
 
-        ButtonGroup group = new ButtonGroup();
-        _rbItemMenu = new JCheckBoxMenuItem("Viewport");
-        _rbItemMenu.setMnemonic(KeyEvent.VK_W);
+        _clear = new JMenuItem("Clear Painel", KeyEvent.VK_C);
+        _clear.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
+        _clear.getAccessibleContext().setAccessibleDescription("");
+        _clear.addActionListener(e -> {
+            drawingPainel.removeAll();
+            drawingPainel.pointCount = 0;
+            drawingPainel.lineCount = 0;
+            drawingPainel.circleCount = 0;
+            drawingPainel.triangleCount = 0;
+            drawingPainel.rectangleCount = 0;
+            drawingPainel.polygonCount = 0;
+            jsLineWeight.setValue(1);
+            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
+            drawingPainel.setCurrentColor(Color.BLACK);
+            jbColor.setForeground(Color.BLACK);
+            currentType = PrimitiveTypes.NONE;
+            drawingPainel.setType(currentType);
+        });
+        jmClear.add(_clear);
 
-        group.add(_rbItemMenu);
-        _optionsMenu.add(_rbItemMenu);
-
-        _optionsMenuColors = new JMenu("Colors");
-        _optionsMenuColors.setMnemonic(KeyEvent.VK_C);
-        _optionsMenu.add(_optionsMenuColors);
-
-        _optionsMenuColorsCel = new JMenuItem("Cel color", KeyEvent.VK_C);
-        _optionsMenuColorsCel.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
-        _optionsMenuColorsCel.getAccessibleContext().setAccessibleDescription("");
-
-        _optionsMenuColors.add(_optionsMenuColorsCel);
-
-        _optionsMenuColorsBackground = new JMenuItem("Cel background color", KeyEvent.VK_F);
-        _optionsMenuColorsBackground.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F, ActionEvent.ALT_MASK));
-        _optionsMenuColorsBackground.getAccessibleContext().setAccessibleDescription(
-                "");
-        
-        _optionsMenuColors.add(_optionsMenuColorsBackground);
-
-        
-        _optionsMenuColors.addSeparator();
-        
-        _optionsMenuDefaultColors = new JMenuItem("Restore default colors", KeyEvent.VK_R);
-        _optionsMenuDefaultColors.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_R, ActionEvent.ALT_MASK));
-        _optionsMenuDefaultColors.getAccessibleContext().setAccessibleDescription(
-                "");
-        _optionsMenuDefaultColors.setEnabled(false);
-        _optionsMenuColors.add(_optionsMenuDefaultColors);
+        _clearAll = new JMenuItem("Clear Memory", KeyEvent.VK_V);
+        _clearAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.ALT_MASK));
+        _clearAll.getAccessibleContext().setAccessibleDescription("");
+        _clearAll.addActionListener(e -> {
+            drawingPainel.removeAll();
+            drawingPainel.pointCount = 0;
+            drawingPainel.lineCount = 0;
+            drawingPainel.circleCount = 0;
+            drawingPainel.triangleCount = 0;
+            drawingPainel.rectangleCount = 0;
+            drawingPainel.polygonCount = 0;
+            jsLineWeight.setValue(1);
+            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT-20);
+            drawingPainel.setCurrentColor(Color.BLACK);
+            jbColor.setForeground(Color.BLACK);
+            currentType = PrimitiveTypes.NONE;
+            drawingPainel.setType(currentType);
+        });
+        jmClear.add(_clearAll);
 
         // Help
         jmHelp = new JMenu("Help");
