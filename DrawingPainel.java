@@ -581,4 +581,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
     }
 
 
+    public void clearMemory(){
+        save.clearMemory();
+    }
 }

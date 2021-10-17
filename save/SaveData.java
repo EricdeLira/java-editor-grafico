@@ -44,4 +44,14 @@ public class SaveData {
         SaveLine poly = new SaveLine(nome, coord, cor, esp);
         poligonos.add(poly);
     }
+
+
+    public void clearMemory(){
+        pontos.clear();
+        retas.clear();
+        circulos.clear();
+        triangulos.clear();
+        retangulos.clear();
+        poligonos.clear();
+    }
 }

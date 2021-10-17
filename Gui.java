@@ -124,6 +124,7 @@ public class Gui extends JFrame{
             jbColor.setForeground(Color.BLACK);
             currentType = PrimitiveTypes.NONE;
             drawingPainel.setType(currentType);
+            drawingPainel.clearMemory();
         });
         jbColor.addActionListener(e -> {
             Color color = JColorChooser.showDialog(null, " Pick a Color", msg.getForeground()); 
