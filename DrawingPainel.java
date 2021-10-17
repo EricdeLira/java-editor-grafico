@@ -443,6 +443,10 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
+    public void clearMemory(){
+        save.clearMemory();
+    }
+
     public void readFile(String file, String name, int esp, int[] color){
         JSONObject jsonObject;
         JSONArray jsonObjectArray;

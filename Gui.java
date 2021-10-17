@@ -237,6 +237,7 @@ public class Gui extends JFrame{
             jbColor.setForeground(Color.BLACK);
             currentType = PrimitiveTypes.NONE;
             drawingPainel.setType(currentType);
+            drawingPainel.clearMemory();
         });
         jmClear.add(_clearAll);
 
