@@ -1,7 +1,5 @@
 ## Projeto de Editor Gráfico: 
 
-##
-
 Nesse projeto é possível desenhar os primitivos gráficos (ponto, reta, circulo, retângulo, triangulo, polígono).
 
 ##
