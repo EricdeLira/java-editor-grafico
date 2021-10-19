@@ -1,4 +1,4 @@
-## Projeto de Editor Gráfico: ##
+## Projeto de Editor Gráfico: 
 
 ##
 
