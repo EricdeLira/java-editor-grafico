@@ -263,7 +263,7 @@ public class Gui extends JFrame{
         String text = "Graphic Editor\nVersion 1.0\n\n"
                 + "(c) Copyright 2021. All rights reserved.\n\n"
                 + "Computacao Grafica e Processamento de Imagens\n"
-                + "Eric Candido\nJoão Pedro Hegedus Vellenich\nCiencia da Computacao - PUCSP";
+                + "Eric Candido\nErick Clinton de Carvalho Leite\nJoão Pedro Hegedus Vellenich\nRenan Alencar Dores\nCiencia da Computacao - PUCSP";
 
         JOptionPane.showMessageDialog(null, text, "About Graphic Editor", JOptionPane.INFORMATION_MESSAGE);
     }
