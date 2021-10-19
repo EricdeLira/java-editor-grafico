@@ -4,8 +4,8 @@ public class Constants {
     // Window dimensions
     public static final int XW_MIN = 0;
     public static final int YW_MIN = 0;
-    public static final int XW_MAX = 680;
-    public static final int YW_MAX = 510;
+    public static final int XW_MAX = 833;
+    public static final int YW_MAX = 619;
 
     // Viewport dimensions
     public static final int XV_MIN = 450;

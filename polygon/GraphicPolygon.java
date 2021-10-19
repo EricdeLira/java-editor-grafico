@@ -15,7 +15,14 @@ public class GraphicPolygon extends Polygon{
     public GraphicPolygon(GraphicPoint p[], Color color, String name, int lineWeight){
         super (p);
         setPolygonColor(color);
-        setPolygonName(name);
+        if(name != ""){
+            setPolygonName(name);
+            
+        }else if(p.length > 0){
+            setPolygonName("("+(int)p[p.length-1].getX()+", "+(int)p[p.length-1].getY()+") - POLYGON");
+        }else{
+            setPolygonName("");
+        }
         setLineWeight(lineWeight);
     }
 
@@ -90,10 +97,9 @@ public class GraphicPolygon extends Polygon{
                 g.drawLine(x1, y1, x2, y2);
             }
         }
-        
-        
-
         g.setColor(getPolygonColor());
-        g.drawString(getPolygonName(), (int)getP(0).getX() + getLineWeight(), (int)getP(0).getY());
+        if(p.length != 0){
+            g.drawString(getPolygonName(), (int)p[p.length-1].getX(), (int)p[p.length-1].getY());
+        }
     }
 }

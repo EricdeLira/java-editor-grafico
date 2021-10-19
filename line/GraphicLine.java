@@ -33,11 +33,13 @@ public class GraphicLine extends Line{
 
     public GraphicLine(GraphicPoint p1, GraphicPoint p2){
         super (p1, p2);
+        setLineName("");
     }
 
     public GraphicLine(GraphicPoint p1, GraphicPoint p2, Color color){
         super (p1, p2);
         setLineColor(color);
+        setLineName("");
     }
 
     public GraphicLine(GraphicPoint p1, GraphicPoint p2, Color color, String name){
