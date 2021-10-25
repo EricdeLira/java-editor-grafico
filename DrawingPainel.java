@@ -1007,19 +1007,25 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             int esp;
             if(DrawingName.equals(nome)){
                 if(op.equals("translate")){
-                    /*
                     double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    
                     aux[0] = coord[0][0];
                     aux[1] = coord[0][1];
                     aux[2] = 1;
-                    coord[0][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
-                    coord[0][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    coord[0][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                    vectorX -= ((aux[0]-coord[1][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                    vectorY -= ((aux[1]-coord[1][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN); 
+
                     aux[0] = coord[1][0];
                     aux[1] = coord[1][1];
                     aux[2] = 1;
-                    coord[1][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
-                    coord[1][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
-                    */
+                    coord[1][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
                 }else if(op.equals("scaleUp")){
                     double aux[] = new double[3];
                     aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
