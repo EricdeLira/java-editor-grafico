@@ -3,16 +3,16 @@ package transformations;
 import point.GraphicPoint;
 
 public class Transformations {
-    public static double[] translate(double m[], GraphicPoint p){
+    public static double[] translate(double m[], double vectorX, double vectorY){
         double result[];
         double mt[][] = new double[3][3];
 
         mt[0][0] = 1;
         mt[0][1] = 0;
-        mt[0][2] = p.getX()-m[0];
+        mt[0][2] = vectorX;
         mt[1][0] = 0;
         mt[1][1] = 1;
-        mt[1][2] = p.getY()-m[1];
+        mt[1][2] = vectorY;
         mt[2][0] = 0;
         mt[2][1] = 0;
         mt[2][2] = 1;
