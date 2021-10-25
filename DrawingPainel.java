@@ -800,9 +800,29 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     coord[1][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
                     coord[1][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
                 }else if(op.equals("scaleUp")){
-
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
                 }else if(op.equals("scaleDown")){
-                    
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
                 }else if(op.equals("rotate")){
                     double aux[] = new double[3];
                     aux[0] =  coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
@@ -817,9 +837,10 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     coord[1][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
                 }
             }
-                cor = l.getCor();
-                esp = l.getEsp();
             
+            cor = l.getCor();
+            esp = l.getEsp();
+
 
             save.addLine(nome, coord, cor, esp);
 
@@ -827,19 +848,15 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
             double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
             double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
-            this.x1 = (int)x1_;
-            this.y1 = (int)y1_;
-            this.x2 = (int)x2_;
-            this.y2 = (int)y2_;
 
             Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
 
             setCurrentColor(color);
             setLineWeight(esp);
 
-            LineDrawings.drawLineOnWindow((Graphics2D)g, x1, y1, x2, y2, nome, getLineWeight(), getCurrentColor());
+            LineDrawings.drawLineOnWindow((Graphics2D)g, (int)x1_, (int)y1_, (int)x2_, (int)y2_, nome, getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
-                LineDrawings.drawLineOnViewport((Graphics2D)g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+                LineDrawings.drawLineOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, (int)x2_, (int)y2_, "", getLineWeight(), getCurrentColor());
             }
         }
 
@@ -881,7 +898,76 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             int[] cor;
             int esp;
             if(DrawingName.equals(nome)){
-                
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0];
+                    aux[1] = coord[0][1];
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0];
+                    aux[1] = coord[1][1];
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[2][0];
+                    aux[1] = coord[2][1];
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                }else if(op.equals("scaleUp")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleDown")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] =  coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] =  coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
             }
                 cor = t.getCor();
                 esp = t.getEsp();
@@ -895,21 +981,15 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
             double x3_ = coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
             double y3_ = coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
-            this.x1 = (int)x1_;
-            this.y1 = (int)y1_;
-            this.x2 = (int)x2_;
-            this.y2 = (int)y2_;
-            this.x3 = (int)x3_;
-            this.y3 = (int)y3_;
 
             Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
 
             setCurrentColor(color);
             setLineWeight(esp);
 
-            TriangleDrawings.drawTriangleOnWindow((Graphics2D)g, x1, y1, x2, y2, x3, y3, nome, getLineWeight(), getCurrentColor());
+            TriangleDrawings.drawTriangleOnWindow((Graphics2D)g, (int)x1_, (int)y1_, (int)x2_, (int)y2_, (int)x3_, (int)y3_, nome, getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
-                TriangleDrawings.drawTriangleOnViewport((Graphics2D)g, window, viewport, x1, y1, x2, y2, x3, y3, "", getLineWeight(), getCurrentColor());
+                TriangleDrawings.drawTriangleOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, (int)x2_, (int)y2_, (int)x3_, (int)y3_, "", getLineWeight(), getCurrentColor());
             }
         }
 
