@@ -808,7 +808,17 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     coord[1][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
                     coord[1][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
                 }else if(op.equals("scaleDown")){
-                    
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
                 }else if(op.equals("rotate")){
                     double aux[] = new double[3];
                     aux[0] =  coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
