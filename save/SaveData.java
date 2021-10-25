@@ -21,6 +21,7 @@ public class SaveData {
             if(p.getNome().equals(nome)){
                 p.cor = cor;
                 p.esp = esp;
+                p.coord = coord;
                 exists = true;
             }
         }
@@ -35,6 +36,7 @@ public class SaveData {
             if(l.getNome().equals(nome)){
                 l.cor = cor;
                 l.esp = esp;
+                l.pontos = coord;
                 exists = true;
             }
         }
@@ -50,6 +52,7 @@ public class SaveData {
             if(c.getNome().equals(nome)){
                 c.cor = cor;
                 c.esp = esp;
+                c.centro = coord;
                 exists = true;
             }
         }
@@ -65,6 +68,7 @@ public class SaveData {
             if(t.getNome().equals(nome)){
                 t.cor = cor;
                 t.esp = esp;
+                t.pontos = coord;
                 exists = true;
             }
         }
@@ -79,6 +83,7 @@ public class SaveData {
         for(SaveLine r: retangulos){
             if(r.getNome().equals(nome)){
                 r.cor = cor;
+                r.pontos = coord;
                 r.esp = esp;
                 exists = true;
             }
@@ -94,6 +99,7 @@ public class SaveData {
         for(SaveLine p: poligonos){
             if(p.getNome().equals(nome)){
                 p.cor = cor;
+                p.pontos = coord;
                 p.esp = esp;
                 exists = true;
             }

@@ -54,8 +54,8 @@ public class Gui extends JFrame{
     /* Menu bar and components */
     private JMenuBar jMenuBar = new JMenuBar();
 
-    private JMenu jmFile, jmClear, jmHelp;
-    private JMenuItem _menuSaveFile, _menuReadFile, jmExit, jmAbout, _clear, _clearAll;
+    private JMenu jmFile, jmClear, jmHelp, jmTransform;
+    private JMenuItem _menuSaveFile, _menuReadFile, jmExit, jmAbout, _clear, _clearAll, _translate, _rotate, _scaleUp, _scaleDown;
     /*---------------------------------------------*/
 
     private JLabel msg = new JLabel("Msg: ");
@@ -131,7 +131,7 @@ public class Gui extends JFrame{
                 drawingPainel.removeAll();
                 drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
                 int [] color = {drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue()};
-                drawingPainel.readFile("save.json", jtfEdit.getText(), drawingPainel.getLineWeight(), color);
+                drawingPainel.readFile("save.json", jtfEdit.getText(), drawingPainel.getLineWeight(), color, "none");
             
         });
         jsLineWeight.addChangeListener(e -> {
@@ -180,7 +180,7 @@ public class Gui extends JFrame{
                 drawingPainel.removeAll();
                 drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
                 int [] color = {drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue()};
-                drawingPainel.readFile(file.toString(), jtfEdit.getText(), drawingPainel.getLineWeight(), color);
+                drawingPainel.readFile(file.toString(), jtfEdit.getText(), drawingPainel.getLineWeight(), color, "none");
             }
             
             
@@ -238,8 +238,49 @@ public class Gui extends JFrame{
             currentType = PrimitiveTypes.NONE;
             drawingPainel.setType(currentType);
             drawingPainel.clearMemory();
+            drawingPainel.saveFile();
         });
         jmClear.add(_clearAll);
+
+        jmTransform = new JMenu("Transform");
+        jMenuBar.add(jmTransform);
+        _rotate = new JMenuItem("rotate");
+        _rotate.addActionListener(e -> {
+            drawingPainel.removeAll();
+            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
+            int[] color = { drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue() };
+            drawingPainel.readFile("save.json", jtfEdit.getText(), drawingPainel.getLineWeight(), color, "rotate");
+            drawingPainel.saveFile();
+        });
+        jmTransform.add(_rotate);
+        _translate = new JMenuItem("move");
+        _translate.addActionListener(e -> {
+            drawingPainel.removeAll();
+            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
+            int[] color = { drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue() };
+            drawingPainel.readFile("save.json", jtfEdit.getText(), drawingPainel.getLineWeight(), color, "translate");
+            drawingPainel.saveFile();
+            
+        });
+        jmTransform.add(_translate);
+        _scaleUp = new JMenuItem("scale up");
+        _scaleUp.addActionListener(e -> {
+            drawingPainel.removeAll();
+            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
+            int[] color = { drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue() };
+            drawingPainel.readFile("save.json", jtfEdit.getText(), drawingPainel.getLineWeight(), color, "scaleUp");
+            drawingPainel.saveFile();
+        });
+        jmTransform.add(_scaleUp);
+        _scaleDown = new JMenuItem("scale down");
+        _scaleDown.addActionListener(e -> {
+            drawingPainel.removeAll();
+            drawingPainel.getGraphics().clearRect(Constants.XW_MIN, Constants.YW_MIN, Constants.WIDTH, Constants.HEIGHT - 20);
+            int[] color = { drawingPainel.getCurrentColor().getRed(), drawingPainel.getCurrentColor().getGreen(), drawingPainel.getCurrentColor().getBlue() };
+            drawingPainel.readFile("save.json", jtfEdit.getText(), drawingPainel.getLineWeight(), color, "scaleDown");
+            drawingPainel.saveFile();
+        });
+        jmTransform.add(_scaleDown);
 
         // Help
         jmHelp = new JMenu("Help");
@@ -262,7 +303,7 @@ public class Gui extends JFrame{
     private void about(){
         String text = "Graphic Editor\nVersion 1.0\n\n"
                 + "(c) Copyright 2021. All rights reserved.\n\n"
-                + "Computacao Grafica e Processamento de Imagens\n"
+                + "Computacao Gráfica e Processamento de Imagens\n"
                 + "Eric Candido\nErick Clinton de Carvalho Leite\nJoão Pedro Hegedus Vellenich\nRenan Alencar Dores\nCiencia da Computacao - PUCSP";
 
         JOptionPane.showMessageDialog(null, text, "About Graphic Editor", JOptionPane.INFORMATION_MESSAGE);
