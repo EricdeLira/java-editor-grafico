@@ -52,6 +52,7 @@ public class SaveData {
             if(c.getNome().equals(nome)){
                 c.cor = cor;
                 c.esp = esp;
+                c.raio = raio;
                 c.centro = coord;
                 exists = true;
             }

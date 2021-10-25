@@ -885,9 +885,21 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     coord[0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
                     coord[1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
                 }else if(op.equals("scaleUp")){
-                    
+                    double aux[] = new double[3];
+                    aux[0] = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y), raio)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y), raio)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    raio = Transformations.scaleUp(aux, new GraphicPoint(x, y), raio)[2];
                 }else if(op.equals("scaleDown")){
-                   
+                    double aux[] = new double[3];
+                    aux[0] = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y), raio)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y), raio)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    raio = Transformations.scaleDown(aux, new GraphicPoint(x, y), raio)[2];
                 }else if(op.equals("rotate")){
                     double aux[] = new double[3];
                     aux[0] =  coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
@@ -901,14 +913,15 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             
             cor = c.getCor();
             esp = c.getEsp();
-            
 
             double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
             double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
 
-            System.out.println("("+x1_+" ,"+y1_+") - ("+x+" ,"+y+")");
+            System.out.println("("+(int)x1_+" ,"+(int)y1_+") - ("+x+" ,"+y+")  - raio: "+(int)raio);
 
             setRadius((int)raio);
+
+            save.addCircle(nome, coord, raio, cor, esp);
 
             Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
 
