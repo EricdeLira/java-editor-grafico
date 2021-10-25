@@ -899,6 +899,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             int esp;
             if(DrawingName.equals(nome)){
                 if(op.equals("translate")){
+                    /*
                     double aux[] = new double[3];
                     aux[0] = coord[0][0];
                     aux[1] = coord[0][1];
@@ -915,7 +916,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     aux[2] = 1;
                     coord[2][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
                     coord[2][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
-
+                    */
                 }else if(op.equals("scaleUp")){
                     double aux[] = new double[3];
                     aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
@@ -1000,6 +1001,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             int esp;
             if(DrawingName.equals(nome)){
                 if(op.equals("translate")){
+                    /*
                     double aux[] = new double[3];
                     aux[0] = coord[0][0];
                     aux[1] = coord[0][1];
@@ -1011,6 +1013,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                     aux[2] = 1;
                     coord[1][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
                     coord[1][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    */
                 }else if(op.equals("scaleUp")){
                     double aux[] = new double[3];
                     aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
