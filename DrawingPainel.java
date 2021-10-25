@@ -917,8 +917,6 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
             double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
 
-            System.out.println("("+(int)x1_+" ,"+(int)y1_+") - ("+x+" ,"+y+")  - raio: "+(int)raio);
-
             setRadius((int)raio);
 
             save.addCircle(nome, coord, raio, cor, esp);
