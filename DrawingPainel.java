@@ -719,6 +719,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         Window window = new Window(Constants.XW_MIN, Constants.YW_MIN, Constants.XW_MAX, Constants.YW_MAX);
         Window viewport = new Window(Constants.XV_MIN, Constants.YV_MIN, Constants.XV_MAX, Constants.YV_MAX);
 
+        //Completo
         for(SavePoint p: pontos){
             String nome = p.getNome();
             double[] coord = p.getCoord();
@@ -768,8 +769,6 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
 
             double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
             double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
-            this.x1 = (int)x1_;
-            this.y1 = (int)y1_;
         
             setCurrentColor(color);
             setLineWeight(esp);
@@ -779,7 +778,8 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 PointDrawings.drawPointOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, "", getLineWeight(), getCurrentColor());
             }
         }
-
+        
+        //Completo
         for(SaveLine l: retas){
             String nome = l.getNome();
             double[][] coord = l.getCoord();
@@ -866,6 +866,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             }
         }
 
+        //Falta (rotate, scaleUp, scaleDown)
         for(SaveCircle c: circulos){
             String nome = c.getNome();
             double[] coord = c.getCoord();
@@ -873,17 +874,39 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             int[] cor;
             int esp;
             if(DrawingName.equals(nome)){
-                
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    aux[0] = coord[0];
+                    aux[1] = coord[1];
+                    aux[2] = 1;
+                    
+                    coord[0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleUp")){
+                    
+                }else if(op.equals("scaleDown")){
+                   
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+
+                    coord[0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
             }
-                cor = c.getCor();
-                esp = c.getEsp();
+            
+            cor = c.getCor();
+            esp = c.getEsp();
             
 
             double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
             double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
 
-            this.x1 = (int)x1_;
-            this.y1 = (int)y1_;
+            System.out.println("("+x1_+" ,"+y1_+") - ("+x+" ,"+y+")");
 
             setRadius((int)raio);
 
@@ -892,12 +915,13 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             setCurrentColor(color);
             setLineWeight(esp);
 
-            CircleDrawings.drawCircleOnWindow((Graphics2D)g, x1, y1, getRadius(), nome, getLineWeight(), getCurrentColor());
+            CircleDrawings.drawCircleOnWindow((Graphics2D)g, (int)x1_, (int)y1_, getRadius(), nome, getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
-                CircleDrawings.drawCircleOnViewport((Graphics2D)g, window, viewport, x1, y1, getRadius(), "", getLineWeight(), getCurrentColor());
+                CircleDrawings.drawCircleOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, getRadius(), "", getLineWeight(), getCurrentColor());
             }
         }
 
+        //Completo
         for(SaveLine t: triangulos){
             String nome = t.getNome();
             double[][] coord = t.getCoord();
@@ -905,7 +929,34 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             int esp;
             if(DrawingName.equals(nome)){
                 if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
                     
+                    aux[0] = coord[0][0];
+                    aux[1] = coord[0][1];
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                    vectorX -= ((aux[0]-coord[1][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                    vectorY -= ((aux[1]-coord[1][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN); 
+
+                    aux[0] = coord[1][0];
+                    aux[1] = coord[1][1];
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                    vectorX -= ((aux[0]-coord[2][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                    vectorY -= ((aux[1]-coord[2][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN);
+
+                    aux[0] = coord[2][0];
+                    aux[1] = coord[2][1];
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
                 }else if(op.equals("scaleUp")){
                     double aux[] = new double[3];
                     aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
@@ -983,6 +1034,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             }
         }
 
+        //Completo
         for(SaveLine r: retangulos){
             String nome = r.getNome();
             double[][] coord = r.getCoord();
@@ -1056,22 +1108,19 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
             double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
             double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
-            this.x1 = (int)x1_;
-            this.y1 = (int)y1_;
-            this.x2 = (int)x2_;
-            this.y2 = (int)y2_;
 
             Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
 
             setCurrentColor(color);
             setLineWeight(esp);
 
-            RectangleDrawings.drawRectangleOnWindow((Graphics2D)g, x1, y1, x2, y2, nome, getLineWeight(), getCurrentColor());
+            RectangleDrawings.drawRectangleOnWindow((Graphics2D)g, (int)x1_, (int)y1_, (int)x2_, (int)y2_, nome, getLineWeight(), getCurrentColor());
             if(isUsingViewport()){
-                RectangleDrawings.drawRectangleOnViewport((Graphics2D)g, window, viewport, x1, y1, x2, y2, "", getLineWeight(), getCurrentColor());
+                RectangleDrawings.drawRectangleOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, (int)x2_, (int)y2_, "", getLineWeight(), getCurrentColor());
             }
         }
 
+        //Completo
         for(SaveLine p: poligonos){
             String nome = p.getNome();
             double[][] coord = p.getCoord();
@@ -1080,7 +1129,23 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
 
             if(DrawingName.equals(nome)){
                 if(op.equals("translate")){
-                    
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    int i = 0;
+                    for(i = 0; i < coord.length-1; i++){
+                        aux[0] = coord[i][0];
+                        aux[1] = coord[i][1];
+                        aux[2] = 1;
+                        coord[i][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                        coord[i][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                        vectorX -= ((aux[0]-coord[i+1][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                        vectorY -= ((aux[1]-coord[i+1][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN); 
+                    }
+                    coord[i][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[i][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
                 }else if(op.equals("scaleUp")){
                     double aux[] = new double[3];
 
@@ -1140,5 +1205,6 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             }
 
         }
+    
     }
 }
