@@ -783,7 +783,35 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             int[] cor;
             int esp;
             if(DrawingName.equals(nome)){
-                
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0];
+                    aux[1] = coord[0][1];
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0];
+                    aux[1] = coord[1][1];
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.translate(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.translate(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleUp")){
+
+                }else if(op.equals("scaleDown")){
+                    
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] =  coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
             }
                 cor = l.getCor();
                 esp = l.getEsp();
