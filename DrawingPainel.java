@@ -6,26 +6,19 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.FileWriter;
 import java.io.IOException;
-//import java.lang.reflect.Array;
-//import java.sql.Savepoint;
 import java.util.ArrayList;
-
 import com.google.gson.Gson;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-//import java.io.IOException;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.plaf.ColorUIResource;
-
+import transformations.Transformations;
 import point.GraphicPoint;
-
 import point.PointDrawings;
 import line.LineDrawings;
 import circle.CircleDrawings;
@@ -69,7 +62,6 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         setMsg(msg);
         setCurrentColor(currentColor);
         setLineWeight(lineWeight);
-
         this.addMouseListener(this); 
         this.addMouseMotionListener(this);
     }
@@ -380,7 +372,6 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
 
     public void drawPrimitives(Graphics2D g) { 
         Window window = new Window(Constants.XW_MIN, Constants.YW_MIN, Constants.XW_MAX, Constants.YW_MAX);
-
         Window viewport = new Window(Constants.XV_MIN, Constants.YV_MIN, Constants.XV_MAX, Constants.YV_MAX);
 
         if(type == PrimitiveTypes.POINT){
@@ -447,7 +438,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
         save.clearMemory();
     }
 
-    public void readFile(String file, String name, int esp, int[] color){
+    public void readFile(String file, String name, int esp, int[] color, String op){
         JSONObject jsonObject;
         JSONArray jsonObjectArray;
         JSONParser parser = new JSONParser();
@@ -493,7 +484,12 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
                 SaveLine p = gson.fromJson(jsonObjectArray.get(i).toString(), SaveLine.class);
                 poligonos.add(p);
             }
-            drawReadFile(pontos, retas, circulos, triangulos, retangulos, poligonos, name, esp, color);
+            if(op.equals("none")){
+                drawReadFile(pontos, retas, circulos, triangulos, retangulos, poligonos, name, esp, color);
+            }else{
+                drawReadFile(pontos, retas, circulos, triangulos, retangulos, poligonos, name, op, x1, y1);
+            }
+            
         } catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -686,6 +682,7 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             double[][] coord = p.getCoord();
             int[] cor;
             int esp;
+
             if(DrawingName.equals(nome)){
                 cor = DrawingColor;
                 esp = DrawingEsp;
@@ -714,5 +711,511 @@ public class DrawingPainel extends JPanel implements MouseListener, MouseMotionL
             }
 
         }
+    }
+
+    
+    public void drawReadFile(ArrayList<SavePoint> pontos, ArrayList<SaveLine> retas,ArrayList<SaveCircle> circulos,ArrayList<SaveLine> triangulos, ArrayList<SaveLine> retangulos,ArrayList<SaveLine> poligonos, String DrawingName, String op, int x, int y){
+        Graphics g = getGraphics();
+        Window window = new Window(Constants.XW_MIN, Constants.YW_MIN, Constants.XW_MAX, Constants.YW_MAX);
+        Window viewport = new Window(Constants.XV_MIN, Constants.YV_MIN, Constants.XV_MAX, Constants.YV_MAX);
+
+        //Completo
+        for(SavePoint p: pontos){
+            String nome = p.getNome();
+            double[] coord = p.getCoord();
+            int[] cor;
+            int esp;
+            if(DrawingName.equals(nome)){
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    aux[0] = coord[0];
+                    aux[1] = coord[1];
+                    aux[2] = 1;
+                    
+                    coord[0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleUp")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleDown")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
+            }
+                
+            cor = p.getCor();
+            esp = p.getEsp();
+            
+            save.addPoint(nome, coord, cor, esp);
+            
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+        
+            setCurrentColor(color);
+            setLineWeight(esp);
+            
+            PointDrawings.drawPointOnWindow((Graphics2D)g, (int)x1_, (int)y1_, nome, getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                PointDrawings.drawPointOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, "", getLineWeight(), getCurrentColor());
+            }
+        }
+        
+        //Completo
+        for(SaveLine l: retas){
+            String nome = l.getNome();
+            double[][] coord = l.getCoord();
+            int[] cor;
+            int esp;
+            if(DrawingName.equals(nome)){
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    
+                    aux[0] = coord[0][0];
+                    aux[1] = coord[0][1];
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                    vectorX -= ((aux[0]-coord[1][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                    vectorY -= ((aux[1]-coord[1][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN); 
+
+                    aux[0] = coord[1][0];
+                    aux[1] = coord[1][1];
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleUp")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleDown")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] =  coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
+            }
+            
+            cor = l.getCor();
+            esp = l.getEsp();
+
+
+            save.addLine(nome, coord, cor, esp);
+
+            double x1_ = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            LineDrawings.drawLineOnWindow((Graphics2D)g, (int)x1_, (int)y1_, (int)x2_, (int)y2_, nome, getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                LineDrawings.drawLineOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, (int)x2_, (int)y2_, "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        //Falta (rotate, scaleUp, scaleDown)
+        for(SaveCircle c: circulos){
+            String nome = c.getNome();
+            double[] coord = c.getCoord();
+            double raio = c.getRaio();
+            int[] cor;
+            int esp;
+            if(DrawingName.equals(nome)){
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    aux[0] = coord[0];
+                    aux[1] = coord[1];
+                    aux[2] = 1;
+                    
+                    coord[0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleUp")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y), raio)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y), raio)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    raio = Transformations.scaleUp(aux, new GraphicPoint(x, y), raio)[2];
+                }else if(op.equals("scaleDown")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y), raio)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y), raio)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    raio = Transformations.scaleDown(aux, new GraphicPoint(x, y), raio)[2];
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+
+                    coord[0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
+            }
+            
+            cor = c.getCor();
+            esp = c.getEsp();
+
+            double x1_ = coord[0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+
+            setRadius((int)raio);
+
+            save.addCircle(nome, coord, raio, cor, esp);
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            CircleDrawings.drawCircleOnWindow((Graphics2D)g, (int)x1_, (int)y1_, getRadius(), nome, getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                CircleDrawings.drawCircleOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, getRadius(), "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        //Completo
+        for(SaveLine t: triangulos){
+            String nome = t.getNome();
+            double[][] coord = t.getCoord();
+            int[] cor;
+            int esp;
+            if(DrawingName.equals(nome)){
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    
+                    aux[0] = coord[0][0];
+                    aux[1] = coord[0][1];
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                    vectorX -= ((aux[0]-coord[1][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                    vectorY -= ((aux[1]-coord[1][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN); 
+
+                    aux[0] = coord[1][0];
+                    aux[1] = coord[1][1];
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                    vectorX -= ((aux[0]-coord[2][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                    vectorY -= ((aux[1]-coord[2][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN);
+
+                    aux[0] = coord[2][0];
+                    aux[1] = coord[2][1];
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                }else if(op.equals("scaleUp")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleDown")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] =  coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] =  coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[2][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[2][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
+            }
+                cor = t.getCor();
+                esp = t.getEsp();
+            
+
+            save.addTriangle(nome, coord, cor, esp);
+
+            double x1_ = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x3_ = coord[2][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y3_ = coord[2][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            TriangleDrawings.drawTriangleOnWindow((Graphics2D)g, (int)x1_, (int)y1_, (int)x2_, (int)y2_, (int)x3_, (int)y3_, nome, getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                TriangleDrawings.drawTriangleOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, (int)x2_, (int)y2_, (int)x3_, (int)y3_, "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        //Completo
+        for(SaveLine r: retangulos){
+            String nome = r.getNome();
+            double[][] coord = r.getCoord();
+            int[] cor;
+            int esp;
+            if(DrawingName.equals(nome)){
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    
+                    aux[0] = coord[0][0];
+                    aux[1] = coord[0][1];
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                    vectorX -= ((aux[0]-coord[1][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                    vectorY -= ((aux[1]-coord[1][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN); 
+
+                    aux[0] = coord[1][0];
+                    aux[1] = coord[1][1];
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                }else if(op.equals("scaleUp")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("scaleDown")){
+                    double aux[] = new double[3];
+                    aux[0] = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+                    aux[0] =  coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[0][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[0][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    aux[0] =  coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                    aux[1] =  coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                    aux[2] = 1;
+                    coord[1][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[1][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                }
+            }
+                cor = r.getCor();
+                esp = r.getEsp();
+            
+            save.addRectangle(nome, coord, cor, esp);
+
+            double x1_ = coord[0][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y1_ = coord[0][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+            double x2_ = coord[1][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+            double y2_ = coord[1][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            RectangleDrawings.drawRectangleOnWindow((Graphics2D)g, (int)x1_, (int)y1_, (int)x2_, (int)y2_, nome, getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                RectangleDrawings.drawRectangleOnViewport((Graphics2D)g, window, viewport, (int)x1_, (int)y1_, (int)x2_, (int)y2_, "", getLineWeight(), getCurrentColor());
+            }
+        }
+
+        //Completo
+        for(SaveLine p: poligonos){
+            String nome = p.getNome();
+            double[][] coord = p.getCoord();
+            int[] cor;
+            int esp;
+
+            if(DrawingName.equals(nome)){
+                if(op.equals("translate")){
+                    double aux[] = new double[3];
+                    double vectorX = x;
+                    double vectorY = y;
+                    int i = 0;
+                    for(i = 0; i < coord.length-1; i++){
+                        aux[0] = coord[i][0];
+                        aux[1] = coord[i][1];
+                        aux[2] = 1;
+                        coord[i][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                        coord[i][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                        vectorX -= ((aux[0]-coord[i+1][0])*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN); 
+                        vectorY -= ((aux[1]-coord[i+1][1])*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN); 
+                    }
+                    coord[i][0] = (Transformations.translate(aux, vectorX, vectorY)[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                    coord[i][1] = (Transformations.translate(aux, vectorX, vectorY)[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+
+                }else if(op.equals("scaleUp")){
+                    double aux[] = new double[3];
+
+                    for(int i = 0; i < coord.length; i++){
+                        aux[0] = coord[i][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                        aux[1] = coord[i][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                        aux[2] = 1;
+
+                        coord[i][0] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                        coord[i][1] = (Transformations.scaleUp(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    }
+                }else if(op.equals("scaleDown")){
+                    double aux[] = new double[3];
+
+                    for(int i = 0; i < coord.length; i++){
+                        aux[0] = coord[i][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                        aux[1] = coord[i][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                        aux[2] = 1;
+
+                        coord[i][0] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                        coord[i][1] = (Transformations.scaleDown(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    }
+                }else if(op.equals("rotate")){
+                    double aux[] = new double[3];
+
+                    for(int i = 0; i < coord.length; i++){
+                        aux[0] =  coord[i][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                        aux[1] =  coord[i][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                        aux[2] = 1;
+
+                        coord[i][0] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[0] - Constants.XW_MIN)/(Constants.XW_MAX - Constants.XW_MIN);
+                        coord[i][1] = (Transformations.rotateToPoint(aux, new GraphicPoint(x, y))[1]- Constants.YW_MIN)/(Constants.YW_MAX - Constants.YW_MIN);
+                    }
+                }
+            }
+
+            cor = p.getCor();
+            esp = p.getEsp();
+
+            save.addPolygon(nome, coord, cor, esp);
+
+            GraphicPoint pt[] = new GraphicPoint[coord.length];
+            for(int i = 0; i < coord.length; i++){
+                double x1_ = coord[i][0]*(Constants.XW_MAX - Constants.XW_MIN) + Constants.XW_MIN;
+                double y1_ = coord[i][1]*(Constants.YW_MAX - Constants.YW_MIN) + Constants.YW_MIN;
+                pt[i] = new GraphicPoint((int)x1_, (int)y1_);
+            }
+            
+            Color color = new ColorUIResource(cor[0], cor[1], cor[2]);
+
+            setCurrentColor(color);
+            setLineWeight(esp);
+
+            PolygonDrawings.drawPolygonOnWindow((Graphics2D)g, pt, nome, getLineWeight(), getCurrentColor());
+            if(isUsingViewport()){
+                PolygonDrawings.drawPolygonOnViewport((Graphics2D)g, window, viewport, pt, "", getLineWeight(), getCurrentColor());
+            }
+
+        }
+    
     }
 }
